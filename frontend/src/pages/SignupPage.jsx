@@ -58,16 +58,16 @@ const SignupPage = () => {
       <div className="flex flex-col justify-center items-center p-6 sm:p-12">
         <div className="w-full max-w-md space-y-8">
           {/* LOGO */}
-          <div className="text-center mb-8">
+          <div className="text-center mt-8">
             <div className="flex flex-col items-center gap-2 group">
               <div
-                className="size-12 rounded-xl bg-primary/10 flex items-center justify-center 
-              group-hover:bg-primary/20 transition-colors"
+                className="size-12 rounded-xl bg-blue-200 flex items-center justify-center 
+              group-hover:bg-blue-300 transition-colors"
               >
-                <MessageSquare className="size-6 text-primary" />
+                <MessageSquare className="size-6 text-blue-500" />
               </div>
-              <h1 className="text-2xl font-bold mt-2">Create Account</h1>
-              <p className="text-base-content/60">Get started with your free account</p>
+              <h1 className="text-2xl font-bold">Create Account</h1>
+              <p >Get started with your free account</p>
             </div>
           </div>
 
@@ -149,7 +149,7 @@ const SignupPage = () => {
            </button>
           </form>
 
-          <div className="text-center">
+          <div className="text-center mt-[-1rem]">
             <p className="text-base-content/60 ">
               Already have an account?{" "}
               <Link to="/login" className="text-blue-400 hover:underline">
