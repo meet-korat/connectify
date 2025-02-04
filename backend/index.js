@@ -4,6 +4,9 @@ import cors from 'cors'
 import { connectDB } from './src/lib/db.js';
 import authRoute from './src/routes/auth.route.js';
 import messageRoutes from './src/routes/message.routes.js'
+import dotenv from 'dotenv';
+
+dotenv.config();
 const app=express();
 
 app.use(cors(

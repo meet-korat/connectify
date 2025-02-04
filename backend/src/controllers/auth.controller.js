@@ -53,11 +53,15 @@ export const login= async (req , res)=>{
         const isMatch=await bcrypt.compare(password,user.password);
         if(!isMatch) return res.status(400).json({message:"Invalid email or password"});
         const token = GenToken(user._id,res);
+
+        console.log(user);
+
         res.status(201).json({
             _id:user._id,
             fullname:user.fullname,
             email:user.email,
-            image:user.image,   
+            image:user.image, 
+            createdAt:user.createdAt, 
         });
     }
     catch(error){
@@ -98,14 +102,14 @@ export const updateProfile= async (req , res)=>{
         const userId=req.user._id;
         if(!image) return res.status(400).json({message:"image is required"});
 
-
         cloudinary.config({
-            cloud_name:process.env.CLOUD_NAME,
-            api_key:process.env.CLOUD_KEY,
-            api_secret:process.env.CLOUD_SECRET,
+            cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
+            api_key:process.env.CLOUDINARY_API_KEY,
+            api_secret:process.env.CLOUDINARY_API_SECRET,
         })
 
         const upload= await cloudinary.uploader.upload(image);
+        
         const updateUserPic= await User.findByIdAndUpdate(userId,{image:upload.secure_url},{new:true});
         res.status(201).json({
             _id:updateUserPic._id,
@@ -123,6 +127,7 @@ export const updateProfile= async (req , res)=>{
 
 export const CheckAuth= async (req , res)=>{
     try {
+        console.log(req.user);
         res.status(201).json(req.user);
     } catch (error) {
         console.log("Internal server error in CheckAuth controller",error);

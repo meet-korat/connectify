@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch,useSelector } from 'react-redux'
-import { LogOut,MessageSquare,Settings,User } from 'lucide-react'
+import { LogOut,MessageSquare,User } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { axiosInstance } from '../lib/axios'
 import { logout } from '../store/userSlice'
 
+
 export const Navbar = () => {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.user.IsAuthenticated);
+
   const Logout= async()=>{
     try {
         console.log(1);
@@ -25,7 +27,7 @@ export const Navbar = () => {
 
   return (
  <header
-      className=" border-b border-gray-300 fixed w-full top-0 z-40 
+      className=" border-b border-gray-300 fixed w-full top-0 z-40 text-black
     backdrop-blur-lg bg-white/60"
     >
       <div className="container mx-auto px-4 h-16">
@@ -40,12 +42,6 @@ export const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <Link
-              to={"/settings"}
-              className={`px-3 py-2 text-sm rounded-lg gap-2 transition-colors`}>
-              <Settings className="w-4 h-4" />
-              <span className="hidden lg:inline ">Settings</span>
-            </Link>
 
             {isAuthenticated &&  (
               <>

@@ -37,7 +37,7 @@ export const LoginPage = () => {
           const response = await axiosInstance.post("/auth/login", formData, {
             withCredentials: true,
           });
-          
+          console.log(response);
           dispatch(loginSuccess(response.data));
           navigate("/");
         } catch (error) {

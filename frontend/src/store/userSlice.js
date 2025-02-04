@@ -9,11 +9,11 @@ const initialState = {
     IsCheckingAuth:false,
     IsLoading:false,
     IsSigningin:false,
+    IsUpdatingProfile:false,
 }
 
 export const userSlice=createSlice({
     name:"user",
-
     initialState,
     reducers:{
         checkAuthStart:(state)=>{
@@ -63,7 +63,6 @@ export const userSlice=createSlice({
           state.IsAuthenticated = true;
           state.IsLoading=false;
           toast.success("Account created successfully");
-
         },
         signUpFailure: (state) => {
           state.currentUser = null;
@@ -71,10 +70,22 @@ export const userSlice=createSlice({
           state.IsSigningup=false;
           toast.error("Something went wrong in signup");
         },
+        updateProfileStart: (state) => {
+          state.IsUpdatingProfile = true;
+        },
+        updateProfileSuccess: (state, action) => {
+          state.IsUpdatingProfile = false;
+          state.currentUser = action.payload;
+          toast.success("Profile updated successfully");
+        },
+        updateProfileFailure: (state) => {
+          state.IsUpdatingProfile = false;
+          toast.error("Failed to update profile");
+        },
         
     },
 });
 
-export const {logout,signUpFailure,signUpStart,signUpSuccess,checkAuthFailure,checkAuthStart,checkAuthSuccess,loginFailure,loginStart,loginSuccess}=userSlice.actions;
+export const {updateProfileFailure,updateProfileStart,updateProfileSuccess,logout,signUpFailure,signUpStart,signUpSuccess,checkAuthFailure,checkAuthStart,checkAuthSuccess,loginFailure,loginStart,loginSuccess}=userSlice.actions;
 
 export default userSlice.reducer;
