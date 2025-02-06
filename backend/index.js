@@ -19,7 +19,7 @@ app.use(cookieParser());
 const PORT=process.env.PORT || 3000;
 app.use(express.json());
 app.use('/api/auth',authRoute);
-app.use('api/message',messageRoutes)
+app.use('/api/messages',messageRoutes)
 
 app.listen(PORT , ()=>{
     console.log(`Server is running on port :${PORT}`);

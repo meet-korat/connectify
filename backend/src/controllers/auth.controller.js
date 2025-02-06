@@ -31,6 +31,7 @@ export const signup= async (req , res)=>{
                 fullname:newUser.fullname,
                 email:newUser.email,
                 image:newUser.image,
+                createdAt:newUser.createdAt,
             });
 
         }

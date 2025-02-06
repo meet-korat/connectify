@@ -10,6 +10,7 @@ const initialState = {
     IsLoading:false,
     IsSigningin:false,
     IsUpdatingProfile:false,
+    OnlineUsers:[]
 }
 
 export const userSlice=createSlice({
