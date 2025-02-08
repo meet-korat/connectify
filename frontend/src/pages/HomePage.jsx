@@ -1,16 +1,16 @@
 import Sidebar from "../components/sidebar.jsx";
 import {NoChatSelected} from "../components/NoChatSelected.jsx";
-import {ChatContainer} from "../components/ChatContainer.jsx";
+import ChatContainer from "../components/ChatContainer.jsx";
 import { useEffect } from "react";
 import { axiosInstance } from "../lib/axios.js";
 import { useDispatch,useSelector } from "react-redux";
 import { getUserFailure,getUserStart,getUserSuccess } from "../store/chatSlice.js";
 import { getMessagesStart,getMessagesFailure,getMessagesSuccess } from "../store/chatSlice.js";
 const HomePage = () => {
-  // const { selectedUser } = useChatStore();
+
   const dispatch = useDispatch();
   const { selectedUser } = useSelector(state => state.chat);
-  // const{users}=useSelector((state)=>state.chat.users);
+
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -45,9 +45,6 @@ const HomePage = () => {
           <div className="flex h-full rounded-lg overflow-hidden">
             <Sidebar />
             {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
-            {/* {}
-            <ChatContainer />
-            <NoChatSelected/> */}
           </div>
         </div>
       </div>

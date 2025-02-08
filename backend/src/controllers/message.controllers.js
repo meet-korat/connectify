@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js"
+import { getReceiverSocketId } from "../lib/socket.js";
 
 export const getuserSideBar = async(req,res) =>{
     try {
@@ -45,13 +46,18 @@ export const sendMessages =async(req,res)=>{
             imageUrl=uploadResponse.secure_url;
         }
 
-        const newMessage=new Messages({
+        const newMessage=new Message({
             senderId,
             receiverId,
             image:imageUrl,
             text
         })
         await newMessage.save();
+
+        const receiverSocketId =getReceiverSocketId(receiverId);
+        if(receiverSocketId){
+            io.to(receiverSocketId).emit("newMessage",newMessage);
+        }
         res.status(201).json(newMessage);
     } catch (error) {
         console.log("Error in send messages");

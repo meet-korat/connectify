@@ -10,7 +10,8 @@ const initialState = {
     IsLoading:false,
     IsSigningin:false,
     IsUpdatingProfile:false,
-    OnlineUsers:[]
+    OnlineUsers:[],
+    Socket:null
 }
 
 export const userSlice=createSlice({
@@ -83,6 +84,7 @@ export const userSlice=createSlice({
           state.IsUpdatingProfile = false;
           toast.error("Failed to update profile");
         },
+        
         
     },
 });

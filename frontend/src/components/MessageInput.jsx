@@ -1,13 +1,16 @@
 import { useRef, useState } from "react";
-import { useChatStore } from "../store/useChatStore";
+import {sendMessageSuccess,sendMessageFailure,sendMessageStart } from "../store/chatSlice.js";
+import { useDispatch ,useSelector} from "react-redux";
 import { Image, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
-
+import { axiosInstance } from "../lib/axios.js";
 const MessageInput = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
-  const { sendMessage } = useChatStore();
+  const dispatch = useDispatch();
+  const selectedUser = useSelector(state => state.chat.selectedUser);
+  const authUser = useSelector(state => state.user.authUser);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -31,12 +34,38 @@ const MessageInput = () => {
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!text.trim() && !imagePreview) return;
-
+    if (!selectedUser?._id) {
+      toast.error("Please select a user to send message");
+      return;
+    }
     try {
-      await sendMessage({
+      dispatch(sendMessageStart());
+      // dispatch(sendMessageSuccess({
+      //   text: text.trim(),
+      //   image: imagePreview,
+      // }));
+
+      const formData = new FormData();
+      if (text.trim()) formData.append("text", text.trim());
+      if (imagePreview) formData.append("image", imagePreview);
+      formData.append("receiverId", selectedUser._id);
+
+      const response = await axiosInstance.post(`/messages/sender/${selectedUser._id}`, formData,{ headers: {
+        "Content-Type": "multipart/form-data",
+      },});
+
+      // Create message object with all required fields
+      const newMessage = {
+        _id: response.data._id,
         text: text.trim(),
-        image: imagePreview,
-      });
+        image: response.data.image,
+        senderId: authUser._id,
+        receiverId: selectedUser._id,
+        createdAt: new Date().toISOString(),
+      };
+
+      dispatch(sendMessageSuccess(newMessage));
+      
 
       // Clear form
       setText("");
@@ -44,6 +73,7 @@ const MessageInput = () => {
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error) {
       console.error("Failed to send message:", error);
+      dispatch(sendMessageFailure());
     }
   };
 

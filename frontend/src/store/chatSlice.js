@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-// import toast from "react-hot-toast";
 
 const initialState={
     messages:[],
@@ -7,6 +6,7 @@ const initialState={
     selectedUser:null,
     isUserLoading:false,
     isMessagesLoading:false,
+    isSending:false
 }
 
 export const chatSlice=createSlice({
@@ -35,9 +35,19 @@ export const chatSlice=createSlice({
         },
         setSelectedUser:(state,action)=>{
             state.selectedUser=action.payload;
+        },
+        sendMessageStart:(state)=>{
+            state.isSending=true;
+        },
+        sendMessageSuccess:(state,action)=>{
+            state.messages.push(action.payload);
+            state.isSending=false;
+        },
+        sendMessageFailure:(state)=>{
+            state.isSending=false;  
         }
     }
 })
 
-export const {setSelectedUser,getUserStart,getUserSuccess,getUserFailure,getMessagesStart,getMessagesSuccess,getMessagesFailure}=chatSlice.actions;
+export const {sendMessageFailure,sendMessageStart,sendMessageSuccess,setSelectedUser,getUserStart,getUserSuccess,getUserFailure,getMessagesStart,getMessagesSuccess,getMessagesFailure}=chatSlice.actions;
 export default chatSlice.reducer;
