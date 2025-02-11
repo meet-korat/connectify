@@ -5,6 +5,7 @@ import MessageSkeleton from "./skeletons/MessageSkeleton.jsx";
 import { formatMessageTime } from "../lib/utils";
 import { useSelector,useDispatch } from "react-redux";
 import { axiosInstance } from "../lib/axios.js";
+import { subscribeToNewMessages,unsubscribeFromMessages } from "../store/socketSlice.js";
 import { getMessagesFailure,getMessagesStart,getMessagesSuccess } from "../store/chatSlice.js";
 import toast from "react-hot-toast";
 
@@ -14,11 +15,10 @@ const ChatContainer = () => {
     isMessagesLoading,
     selectedUser,
   } = useSelector(state=>state.chat);
-  const { authUser } = useSelector(state=>state.user);
+  const { currentUser } = useSelector(state=>state.user);
   const messageEndRef = useRef(null);
   const dispatch = useDispatch();
   useEffect(() => {
-
     const getMessages = async()=>{
       if (!selectedUser?._id) return;
       try {
@@ -33,11 +33,10 @@ const ChatContainer = () => {
     }
 
     getMessages();
+    subscribeToNewMessages();
+    return () => unsubscribeFromMessages();
 
-    // subscribeToMessages();
-
-    // return () => unsubscribeFromMessages();
-  }, [selectedUser._id,dispatch]);
+  }, [selectedUser._id,dispatch,subscribeToNewMessages,unsubscribeFromMessages]);
 
   useEffect(() => {
     if (messageEndRef.current && messages) {
@@ -58,22 +57,23 @@ const ChatContainer = () => {
   return (
     <div className="flex-1 flex flex-col overflow-auto">
       <ChatHeader />
-
+      {console.log("messages",messages)}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {Array.isArray(messages) && messages.length > 0 ? (
-          messages.map((message, index) => (
+      {messages.map((message) => {
+        return (
+          message?.senderId && (
             <div
               key={message._id}
-              className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}
-              ref={index === messages.length - 1 ? messageEndRef : null} // Only add ref to last message
+              className={`chat ${message.senderId === currentUser._id ? "chat-end" : "chat-start"}`}
+              ref={messageEndRef}
             >
               <div className="chat-image avatar">
                 <div className="size-10 rounded-full border">
                   <img
                     src={
-                      message.senderId === authUser._id
-                        ? authUser?.profilePic || "/avatar.png"
-                        : selectedUser?.profilePic || "/avatar.png"
+                      message.senderId === currentUser._id
+                        ? currentUser.profilePic || "/avatar.png"
+                        : selectedUser.profilePic || "/avatar.png"
                     }
                     alt="profile pic"
                   />
@@ -95,12 +95,11 @@ const ChatContainer = () => {
                 {message.text && <p>{message.text}</p>}
               </div>
             </div>
-          ))
-        ) : (
-          <div className="flex-1 flex items-center justify-center">
-            <p className="text-gray-500">No messages yet</p>
-          </div>
-        )}
+          )
+        );
+      })}
+
+        <div ref={messageEndRef} />
       </div>
 
       <MessageInput />

@@ -4,13 +4,15 @@ import { useDispatch ,useSelector} from "react-redux";
 import { Image, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios.js";
+
+
 const MessageInput = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
   const selectedUser = useSelector(state => state.chat.selectedUser);
-  const authUser = useSelector(state => state.user.authUser);
+  const currentUser = useSelector(state => state.user.currentUser);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -40,27 +42,27 @@ const MessageInput = () => {
     }
     try {
       dispatch(sendMessageStart());
-      // dispatch(sendMessageSuccess({
-      //   text: text.trim(),
-      //   image: imagePreview,
-      // }));
 
       const formData = new FormData();
-      if (text.trim()) formData.append("text", text.trim());
+      if (text) formData.append("text", text);
       if (imagePreview) formData.append("image", imagePreview);
-      formData.append("receiverId", selectedUser._id);
-
-      const response = await axiosInstance.post(`/messages/sender/${selectedUser._id}`, formData,{ headers: {
-        "Content-Type": "multipart/form-data",
-      },});
+      formData.append("recieverId", selectedUser._id);
+      const response = await axiosInstance.post(`/messages/sender/${selectedUser._id}`, formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      console.log("msg response",response);
 
       // Create message object with all required fields
       const newMessage = {
         _id: response.data._id,
-        text: text.trim(),
+        text: text,
         image: response.data.image,
-        senderId: authUser._id,
-        receiverId: selectedUser._id,
+        senderId: response.data.senderId,
+        recieverId: response.data.recieverId,
         createdAt: new Date().toISOString(),
       };
 

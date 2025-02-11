@@ -40,14 +40,18 @@ export const chatSlice=createSlice({
             state.isSending=true;
         },
         sendMessageSuccess:(state,action)=>{
+            console.log(action.payload);
             state.messages.push(action.payload);
             state.isSending=false;
         },
         sendMessageFailure:(state)=>{
             state.isSending=false;  
+        },
+        addMessage:(state,action)=>{
+            state.messages.push(action.payload);
         }
     }
 })
 
-export const {sendMessageFailure,sendMessageStart,sendMessageSuccess,setSelectedUser,getUserStart,getUserSuccess,getUserFailure,getMessagesStart,getMessagesSuccess,getMessagesFailure}=chatSlice.actions;
+export const {addMessage,sendMessageFailure,sendMessageStart,sendMessageSuccess,setSelectedUser,getUserStart,getUserSuccess,getUserFailure,getMessagesStart,getMessagesSuccess,getMessagesFailure}=chatSlice.actions;
 export default chatSlice.reducer;
